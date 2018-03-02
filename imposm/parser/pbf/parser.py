@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import with_statement
+from __future__ import with_statement, print_function
+from builtins import range
 
 import struct
 import sys
 import zlib
-import time
 
 
 from marshal import dumps
@@ -134,11 +134,13 @@ class PBFParser(object):
                 relations = []
         self.relations_callback(relations)
 
+
 def decoded_stringtable(stringtable):
     result = []
     for s in stringtable:
         result.append(s.decode('utf-8'))
     return result
+
 
 class PrimitiveBlockParser(object):
     """
@@ -203,7 +205,7 @@ class PrimitiveBlockParser(object):
                 lons = dense.lon
                 keys_vals = dense.keys_vals
                 last_id = last_lat = last_lon = last_keysvals_pos = 0
-                for i in xrange(len(ids)):
+                for i in range(len(ids)):
                     last_id += ids[i]
                     last_lat += coord_scale * (lat_offset + (granularity * lats[i]))
                     last_lon += coord_scale * (lon_offset + (granularity * lons[i]))
@@ -214,7 +216,7 @@ class PrimitiveBlockParser(object):
                 for node in nodes:
                     keys, vals = node.keys, node.vals
                     tags = []
-                    for i in xrange(len(keys)):
+                    for i in range(len(keys)):
                         tags.append((self.stringtable[keys[i]], self.stringtable[vals[i]]))
                     yield (node.id, tags, (node.lon, node.lat))
     
@@ -233,7 +235,7 @@ class PrimitiveBlockParser(object):
                     delta_refs = way.refs
                     
                     tags = {}
-                    for i in xrange(len(keys)):
+                    for i in range(len(keys)):
                         tags[self.stringtable[keys[i]]] = self.stringtable[vals[i]]
                     refs = []
                     ref = 0
@@ -260,11 +262,11 @@ class PrimitiveBlockParser(object):
                     keys = relation.keys
                     vals = relation.vals
                     memid = 0
-                    for i in xrange(len(rel_types)):
+                    for i in range(len(rel_types)):
                         memid += memids[i]
                         members.append((memid, _MEMBERTYPE[rel_types[i]], self.stringtable[roles_sids[i]]))
                     tags = {}
-                    for i in xrange(len(keys)):
+                    for i in range(len(keys)):
                         tags[self.stringtable[keys[i]]] = self.stringtable[vals[i]]
                     yield (relation.id, tags, members)
 
@@ -352,9 +354,9 @@ class PBFFile(object):
             self.prev_blob_pos = self.next_blob_pos
             self.next_blob_pos = blob_pos + blob_size
             yield dict(blob_pos=blob_pos, blob_size=blob_size,
-                blob_header_pos=blob_header_pos,
-                prev_blob_header_pos=prev_blob_header_pos,
-                filename=self.filename)
+                       blob_header_pos=blob_header_pos,
+                       prev_blob_header_pos=prev_blob_header_pos,
+                       filename=self.filename)
     
     def primitive_block_parsers(self):
         """
@@ -390,10 +392,10 @@ if __name__ == '__main__':
     from timeit import Timer
     n = 1
     r = 1
-    print "reading %s, number of calls: %d, repeat: %d" %(sys.argv[1],n,r)
+    print("reading %s, number of calls: %d, repeat: %d" %(sys.argv[1],n,r))
     t = Timer("read_pbf(sys.argv[1])", "from __main__ import read_pbf")
     times = t.repeat(r,n)
     avrg_times = []
     for time in times:
         avrg_times.append(time/n)                  
-    print "avrg time/call: %f" %(min(avrg_times))
+    print("avrg time/call: %f" %(min(avrg_times)))

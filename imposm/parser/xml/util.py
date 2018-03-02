@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import with_statement
+from __future__ import with_statement, print_function
 from xml.etree import cElementTree as ET
 from contextlib import contextmanager
+
 
 def iterparse(fileobj):
     """
@@ -36,4 +37,4 @@ def log_file_on_exception(xml):
         xml.seek(0)
         with open(filename, 'w') as f:
             f.write(xml.read())
-        print 'SyntaxError in xml: %s, (stored dump %s)' % (ex, filename)
+        print('SyntaxError in xml: %s, (stored dump %s)' % (ex, filename))

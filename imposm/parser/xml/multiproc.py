@@ -12,11 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import print_function
+from builtins import range
+
 import mmap
 import multiprocessing
 import re
+import sys
 
-from Queue import Empty
+if sys.version_info < (3, 0):
+    from Queue import Empty
+else:
+    from queue import Empty
 
 from imposm.parser.xml.parser import XMLParser
 from imposm.parser.util import setproctitle
@@ -95,9 +102,12 @@ class XMLMultiProcParser(object):
     def parse(self, stream):
         assert not self.pool
 
-        for _ in xrange(self.pool_size):
-            proc = XMLParserProcess(self.mmap_pool, self.mmap_queue, nodes_callback=self.nodes_callback,
-                coords_callback=self.coords_callback, ways_callback=self.ways_callback,
+        for _ in range(self.pool_size):
+            proc = XMLParserProcess(
+                self.mmap_pool, self.mmap_queue,
+                nodes_callback=self.nodes_callback,
+                coords_callback=self.coords_callback,
+                ways_callback=self.ways_callback,
                 relations_callback=self.relations_callback,
                 nodes_tag_filter=self.nodes_tag_filter,
                 ways_tag_filter=self.ways_tag_filter,
@@ -257,7 +267,7 @@ if __name__ == '__main__':
                     break
                 count += len(nodes)
                 queue.task_done()
-            print type, count
+            print(type, count)
         return count
 
 
@@ -275,7 +285,8 @@ if __name__ == '__main__':
         proc.start()
 
     parser = XMLMultiProcParser(open(sys.argv[1]), 2, nodes_queue=nodes_queue,
-        ways_queue=ways_queue, relations_queue=relations_queue)
+                                ways_queue=ways_queue,
+                                relations_queue=relations_queue)
     parser.start()
 
     nodes_queue.put(None)
