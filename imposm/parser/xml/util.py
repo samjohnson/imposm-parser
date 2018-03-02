@@ -25,11 +25,12 @@ def iterparse(fileobj):
     _event, root = context.next()
     return root, context
 
+
 @contextmanager
 def log_file_on_exception(xml):
     try:
         yield
-    except SyntaxError, ex:
+    except (SyntaxError) as ex:
         import tempfile
         fd_, filename = tempfile.mkstemp('.osm')
         xml.seek(0)

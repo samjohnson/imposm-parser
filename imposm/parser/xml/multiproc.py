@@ -51,6 +51,7 @@ class MMapReader(object):
     def seek(self, n):
         self.m.seek(n)
 
+
 class XMLParserProcess(XMLParser, multiprocessing.Process):
     def __init__(self, mmap_pool, mmap_queue, *args, **kw):
         multiprocessing.Process.__init__(self)
@@ -72,14 +73,14 @@ class XMLParserProcess(XMLParser, multiprocessing.Process):
             self.mmap_pool.free(mmap_idx)
 
 
-
 class XMLMultiProcParser(object):
     nodes_tag_filter = None
     ways_tag_filter = None
     relations_tag_filter = None
 
     def __init__(self, pool_size, nodes_queue=None, ways_queue=None,
-        relations_queue=None, coords_queue=None, marshal_elem_data=False):
+                 relations_queue=None, coords_queue=None,
+                 marshal_elem_data=False):
         self.pool_size = pool_size
         self.pool = []
         self.nodes_callback = nodes_queue.put if nodes_queue else None

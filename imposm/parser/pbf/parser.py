@@ -17,6 +17,8 @@ from __future__ import with_statement
 import struct
 import sys
 import zlib
+import time
+
 
 from marshal import dumps
 
@@ -28,7 +30,6 @@ SUPPORTED_FEATURES = set(['OsmSchema-V0.6', 'DenseNodes'])
 _MEMBERTYPE = {0 : 'node',
                1 : 'way',
                2 : 'relation'}
-
 
 
 class PBFParser(object):
@@ -266,7 +267,8 @@ class PrimitiveBlockParser(object):
                     for i in xrange(len(keys)):
                         tags[self.stringtable[keys[i]]] = self.stringtable[vals[i]]
                     yield (relation.id, tags, members)
-                    
+
+
 class PBFHeader(object):
     def __init__(self, filename, blob_pos, blob_size):
         data = read_blob_data(filename, blob_pos, blob_size)
@@ -292,7 +294,6 @@ def read_blob_data(filename, blob_pos, blob_size):
         return raw_data
     return zlib.decompress(blob.zlib_data)
 
-import time
 
 class PBFFile(object):
     """
@@ -383,6 +384,7 @@ def read_pbf(filename):
             pass
         for relation in block.relations():
             pass
+
 
 if __name__ == '__main__':
     from timeit import Timer

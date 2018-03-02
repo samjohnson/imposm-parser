@@ -22,6 +22,7 @@ from Queue import Empty
 
 from imposm.parser.util import default_concurrency, fileinput, setproctitle
 
+
 class OSMParser(object):
     """
     High-level OSM parser.
@@ -100,7 +101,8 @@ class OSMParser(object):
             setproctitle('imposm parser')
             queues = dict([(type, q) for type, (q, c) in queues_callbacks.items()])
             
-            parser = parser_class(self.concurrency,
+            parser = parser_class(
+                self.concurrency,
                 ways_queue=queues.get('ways'),
                 coords_queue=queues.get('coords'),
                 nodes_queue=queues.get('nodes'),

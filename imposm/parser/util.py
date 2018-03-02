@@ -22,12 +22,15 @@ try:
 except ImportError:
     setproctitle = lambda x: None
 
+
 def default_concurrency():
     return multiprocessing.cpu_count()
+
 
 def bzip_reader(filename):
     p = subprocess.Popen(['bunzip2', '-c', filename], bufsize=-1, stdout=subprocess.PIPE)
     return p.stdout
+
 
 @contextlib.contextmanager
 def fileinput(filename):
@@ -37,6 +40,7 @@ def fileinput(filename):
         fh = open(filename, 'rb')
         yield fh
         fh.close()
+
 
 def estimate_records(files):
     records = 0

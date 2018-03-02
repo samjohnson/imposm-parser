@@ -36,19 +36,21 @@ class PBFParserProcess(PBFParser, multiprocessing.Process):
                     size=pos['blob_size'])
             self.pos_queue.task_done()
 
+
 class PBFMultiProcParser(object):
     nodes_tag_filter = None
     ways_tag_filter = None
     relations_tag_filter = None
 
     def __init__(self, pool_size, nodes_queue=None, ways_queue=None,
-        relations_queue=None, coords_queue=None, marshal_elem_data=False):
+                 relations_queue=None, coords_queue=None, marshal_elem_data=False):
         self.pool_size = pool_size
         self.nodes_callback = nodes_queue.put if nodes_queue else None
         self.ways_callback = ways_queue.put if ways_queue else None
         self.relations_callback = relations_queue.put if relations_queue else None
         self.coords_callback = coords_queue.put if coords_queue else None
         self.marshal = marshal_elem_data
+
     def parse(self, filename):
         pos_queue = multiprocessing.JoinableQueue(32)
         pool = []
@@ -75,6 +77,7 @@ class PBFMultiProcParser(object):
             pos_queue.put(None)
         for proc in pool:
             proc.join()
+
 
 if __name__ == '__main__':
     import sys
