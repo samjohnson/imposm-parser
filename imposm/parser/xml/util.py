@@ -23,8 +23,8 @@ def iterparse(fileobj):
     """
     context = ET.iterparse(fileobj, events=("start", "end"))
     context = iter(context)
-    _event, root = context.next()
-    return root, context
+    for _event, root in context:
+        return root, context
 
 
 @contextmanager
