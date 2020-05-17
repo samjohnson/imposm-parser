@@ -201,12 +201,12 @@ class XMLChunker(object):
     def _new_xml_outstream(self):
         self.current_mmap_idx, stream = self.mmap_pool.new()
         stream.seek(0)
-        stream.write("<osm xmlns:xapi='http://www.informationfreeway.org/xapi/0.6'>")
+        stream.write("<osm xmlns:xapi='http://www.informationfreeway.org/xapi/0.6'>".encode('utf8'))
         return stream
 
     def _finished_xml_outstream(self, last_line, stream):
         if '</osm' not in last_line:
-            stream.write('</osm>\n')
+            stream.write('</osm>\n'.encode('utf8'))
         return self.current_mmap_idx, stream.tell()
 
     def read(self, mmaps_queue, coords_callback=None):
@@ -219,7 +219,7 @@ class XMLChunker(object):
         coord_node_re_match = re.compile(r'^\s*<node id="(\d+)" .*lat="([-0-9.]+)" '
                                           'lon="([-0-9.]+)".*/>').match
         node_re_match = re.compile(r'^\s*<node .*/>').match
-        xml_nodes.write(self._last_line)
+        xml_nodes.write(self._last_line.encode('utf8'))
         split = False
         line = ''
         for line in self.stream:
@@ -232,9 +232,9 @@ class XMLChunker(object):
                         coords_callback(coords)
                         coords = []
                 else:
-                    xml_nodes.write(line)
+                    xml_nodes.write(line.encode('utf8'))
             else:
-                xml_nodes.write(line)
+                xml_nodes.write(line.encode('utf8'))
             if split:
                 if (line.rstrip().endswith(('</way>', '</node>', '</relation>'))
                     or (coords_callback and coord_node_match)
